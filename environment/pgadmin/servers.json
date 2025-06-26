@@ -1,0 +1,14 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "PostgreSQL - Estoque",
+      "Group": "Servers",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "estoque",
+      "Username": "admin",
+      "SSLMode": "prefer",
+      "PassFile": "/pgpass"
+    }
+  }
+}
