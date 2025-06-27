@@ -1,62 +1,131 @@
-package org.claumann;
+package org.claumann.dao;
 
+import org.claumann.config.ConnectionFactory;
+import org.claumann.model.Product;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 public class ProductDaoImpl implements ProductDao {
 
-    private final List<Product> products = new ArrayList<Product>();
+    private final ConnectionFactory connectionFactory;
 
-
-    @Override
-    public Product findByCode(final String code) {
-        return products.stream()
-                .filter(item -> item.getCode().equals(code))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException(String.format("Product with code %s not found", code)));
+    public ProductDaoImpl(final ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
     }
 
     @Override
-    public void insert(final Product product) {
-        final int index = products.indexOf(product);
-        if (index != -1)
-            throw new RuntimeException("Product already exists");
+    public Product findByCode(final String code) throws SQLException {
+        final String sql = "SELECT * FROM product WHERE code = ?";
+        try (
+                Connection connection = connectionFactory.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)
+        ) {
+            statement.setString(1, code);
 
-        products.add(product);
-    }
-
-    @Override
-    public void update(final String code, final int quantity) {
-        products.stream()
-                .filter(product -> product.getCode().equals(code))
-                .findFirst()
-                .ifPresent(item -> item.setQuantity(quantity));
-    }
-
-    @Override
-    public void delete(final String code) {
-        products.stream()
-                .filter(product -> product.getCode().equals(code))
-                .findFirst()
-                .ifPresentOrElse(
-                        products::remove,
-                        () -> {
-                            throw new NoSuchElementException("Product not found with code: " + code);
-                        }
+            final ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return new Product(
+                        resultSet.getString("code"),
+                        resultSet.getString("name"),
+                        resultSet.getInt("quantity")
                 );
+            }
+        }
+        return null;
     }
 
     @Override
-    public List<Product> findLowStockProducts() {
-        return products.stream()
-                .filter(product -> product.getQuantity() < 10)
-                .toList();
+    public boolean insert(final Product product) throws SQLException {
+        String sql = "INSERT INTO product (code, name, quantity) VALUES (?, ?, ?)";
+        try (
+                Connection connection = connectionFactory.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)
+        ) {
+            statement.setString(1, product.getCode());
+            statement.setString(2, product.getNome());
+            statement.setInt(3, product.getQuantity());
+
+            final int rowsAffected = statement.executeUpdate();
+            return rowsAffected > 0;
+        }
     }
 
     @Override
-    public List<Product> listAll() {
-        return this.products;
+    public boolean update(final String code, final int quantity) throws SQLException {
+        final String sql = "UPDATE product SET code = ?, quantity = ? WHERE code = ?";
+        try (
+                Connection connection = connectionFactory.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)
+        ) {
+            statement.setString(1, code);
+            statement.setInt(2, quantity);
+
+            final int rowsAffected = statement.executeUpdate();
+            return rowsAffected > 0;
+        }
+    }
+
+    @Override
+    public int delete(final String code) throws SQLException {
+        String sql = "DELETE FROM product WHERE code = ?";
+        try (
+                Connection connection = connectionFactory.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)
+        ) {
+            statement.setString(1, code);
+            return statement.executeUpdate();
+        }
+    }
+
+    @Override
+    public List<Product> findLowStock(final int stockQuantity) throws SQLException {
+        final List<Product> products = new ArrayList<>();
+        final String sql = "SELECT * FROM product WHERE quantity < ?";
+
+        try (
+                Connection connection = connectionFactory.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)
+        ) {
+            statement.setInt(1, stockQuantity);
+
+            final ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                final Product product = new Product(
+                        resultSet.getString("code"),
+                        resultSet.getString("name"),
+                        resultSet.getInt("quantity")
+                );
+                products.add(product);
+            }
+        }
+        return products;
+    }
+
+    @Override
+    public List<Product> listAll() throws SQLException {
+        final List<Product> products = new ArrayList<>();
+        final String sql = "SELECT * FROM product";
+
+        try (
+                Connection connection = connectionFactory.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)
+        ) {
+            final ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                final Product product = new Product(
+                        resultSet.getString("code"),
+                        resultSet.getString("name"),
+                        resultSet.getInt("quantity")
+                );
+                products.add(product);
+            }
+        }
+        return products;
     }
 
 }

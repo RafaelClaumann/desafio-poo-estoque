@@ -1,4 +1,4 @@
-package org.claumann;
+package org.claumann.model;
 
 import java.util.Objects;
 

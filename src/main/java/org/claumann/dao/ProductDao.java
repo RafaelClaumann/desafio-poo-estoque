@@ -1,19 +1,22 @@
-package org.claumann;
+package org.claumann.dao;
 
+import org.claumann.model.Product;
+
+import java.sql.SQLException;
 import java.util.List;
 
 public interface ProductDao {
 
-    Product findByCode(final String code);
+    Product findByCode(final String code) throws SQLException;
 
-    void insert(final Product product);
+    boolean insert(final Product product) throws SQLException;
 
-    void update(final String code, final int quantity);
+    boolean update(final String code, final int quantity) throws SQLException;
 
-    void delete(final String code);
+    int delete(final String code) throws SQLException;
 
-    List<Product> findLowStockProducts();
+    List<Product> findLowStock(final int stockQuantity) throws SQLException;
 
-    List<Product> listAll();
+    List<Product> listAll() throws SQLException;
 
 }
