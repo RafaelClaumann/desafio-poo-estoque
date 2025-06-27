@@ -1,6 +1,5 @@
 package org.claumann.dao;
 
-import org.claumann.config.ConnectionFactory;
 import org.claumann.model.Product;
 
 import java.sql.Connection;
@@ -12,19 +11,17 @@ import java.util.List;
 
 public class ProductDaoImpl implements ProductDao {
 
-    private final ConnectionFactory connectionFactory;
+    private final Connection connection;
 
-    public ProductDaoImpl(final ConnectionFactory connectionFactory) {
-        this.connectionFactory = connectionFactory;
+    public ProductDaoImpl(final Connection connection) {
+        this.connection = connection;
     }
 
     @Override
     public Product findByCode(final String code) throws SQLException {
         final String sql = "SELECT * FROM product WHERE code = ?";
-        try (
-                Connection connection = connectionFactory.getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)
-        ) {
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, code);
 
             final ResultSet resultSet = statement.executeQuery();
@@ -42,10 +39,8 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public boolean insert(final Product product) throws SQLException {
         String sql = "INSERT INTO product (code, name, quantity) VALUES (?, ?, ?)";
-        try (
-                Connection connection = connectionFactory.getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)
-        ) {
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, product.getCode());
             statement.setString(2, product.getNome());
             statement.setInt(3, product.getQuantity());
@@ -58,10 +53,8 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public boolean update(final String code, final int quantity) throws SQLException {
         final String sql = "UPDATE product SET code = ?, quantity = ? WHERE code = ?";
-        try (
-                Connection connection = connectionFactory.getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)
-        ) {
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, code);
             statement.setInt(2, quantity);
 
@@ -72,11 +65,9 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public int delete(final String code) throws SQLException {
-        String sql = "DELETE FROM product WHERE code = ?";
-        try (
-                Connection connection = connectionFactory.getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)
-        ) {
+        final String sql = "DELETE FROM product WHERE code = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, code);
             return statement.executeUpdate();
         }
@@ -87,10 +78,7 @@ public class ProductDaoImpl implements ProductDao {
         final List<Product> products = new ArrayList<>();
         final String sql = "SELECT * FROM product WHERE quantity < ?";
 
-        try (
-                Connection connection = connectionFactory.getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)
-        ) {
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, stockQuantity);
 
             final ResultSet resultSet = statement.executeQuery();
@@ -111,10 +99,7 @@ public class ProductDaoImpl implements ProductDao {
         final List<Product> products = new ArrayList<>();
         final String sql = "SELECT * FROM product";
 
-        try (
-                Connection connection = connectionFactory.getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)
-        ) {
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             final ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 final Product product = new Product(
