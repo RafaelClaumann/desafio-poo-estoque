@@ -83,3 +83,13 @@ Vantagens do HikariCP em relação à criação manual de conexões:
 - Gerenciamento Eficiente de Recursos: O pool controla o número máximo e mínimo de conexões abertas (maximum-pool-size, minimum-idle), fecha conexões ociosas após um tempo configurado (idle-timeout) e renova conexões periodicamente (max-lifetime), evitando problemas de conexões inválidas ou "zumbis".
 - Escalabilidade: Permite que múltiplas conexões sejam usadas simultaneamente, suportando alta concorrência sem sobrecarregar o banco.
 - Robustez e Monitoramento: O HikariCP possui mecanismos para detectar vazamentos de conexão (com leakDetectionThreshold) e reconectar automaticamente conexões inválidas, além de fornecer métricas detalhadas para monitoramento.
+
+Erro de logs HikariCP
+```text
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+```
+
+O erro indica que o SLF4J não encontrou uma implementação concreta de logger no classpath. O SLF4J é apenas uma API de logging, e para funcionar corretamente precisa de um binding (implementação) como Logback ou Log4j.
+
+Documentação logback ([link](https://logback.qos.ch/manual/configuration.html))
