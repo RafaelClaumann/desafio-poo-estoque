@@ -74,3 +74,12 @@ try (BufferedReader br = new BufferedReader(new FileReader("arquivo.txt"))) {
 
 Uso de conexões criadas manualmente (DriverManager.getConnection):
 - A cada operação, o DAO abre uma nova conexão diretamente com o banco usando DriverManager.getConnection().
+
+## HikariCP
+O HikariCP é um dos pools de conexão JDBC mais rápidos e eficientes disponíveis atualmente, projetado para oferecer alta performance, baixa latência e confiabilidade no gerenciamento de conexões com bancos de dados. Ele é amplamente adotado em aplicações Java, especialmente em ambientes de produção e frameworks como Spring Boot, onde é o pool padrão desde a versão 2.x.
+
+Vantagens do HikariCP em relação à criação manual de conexões:
+- Performance e Baixa Latência: Ao invés de abrir e fechar uma conexão a cada requisição (processo custoso que envolve autenticação e handshake), o HikariCP mantém um conjunto de conexões pré-abertas e prontas para uso.
+- Gerenciamento Eficiente de Recursos: O pool controla o número máximo e mínimo de conexões abertas (maximum-pool-size, minimum-idle), fecha conexões ociosas após um tempo configurado (idle-timeout) e renova conexões periodicamente (max-lifetime), evitando problemas de conexões inválidas ou "zumbis".
+- Escalabilidade: Permite que múltiplas conexões sejam usadas simultaneamente, suportando alta concorrência sem sobrecarregar o banco.
+- Robustez e Monitoramento: O HikariCP possui mecanismos para detectar vazamentos de conexão (com leakDetectionThreshold) e reconectar automaticamente conexões inválidas, além de fornecer métricas detalhadas para monitoramento.
