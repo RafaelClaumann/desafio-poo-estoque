@@ -3,6 +3,7 @@
 ## Iniciando projeto
 Primeiro execute o comando `docker-compose up -d` no diretório `/controle-estoque/docker`.
 O arquivo `start.sql`  cria a tabela `product` e alguns itens no `PostgreSQL`.
+Com o comando `mvn clean install` as dependencias serâo instaladas.
 O método `main` está na classe `App.java`.
 
 ### Diferença entre os métodos executeQuery e executeUpdate no JDBC
