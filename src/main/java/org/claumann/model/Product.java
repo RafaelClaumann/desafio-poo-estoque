@@ -8,6 +8,8 @@ public class Product {
     private String nome;
     private int quantity;
 
+    public Product() {}
+
     public Product(String code, String nome, int quantity) {
         this.code = code;
         this.nome = nome;
