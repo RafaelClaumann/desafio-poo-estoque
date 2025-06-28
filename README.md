@@ -1,4 +1,9 @@
+# Estoque
 
+## Iniciando projeto
+Primeiro execute o comando `docker-compose up -d` no diretório `/controle-estoque/docker`.
+O arquivo `start.sql`  cria a tabela `product` e alguns itens no `PostgreSQL`.
+O método `main` está na classe `App.java`.
 
 ### Diferença entre os métodos executeQuery e executeUpdate no JDBC
 - `executeQuery` é usado para executar instruções SQL do tipo SELECT, ou seja, consultas que retornam dados. Ele retorna um objeto do tipo ResultSet, que contém os dados resultantes da consulta. É indicado para operações que recuperam informações do banco de dados.
