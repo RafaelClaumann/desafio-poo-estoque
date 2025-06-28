@@ -15,8 +15,13 @@ public class ProductService {
     }
 
     public boolean saveProduct(final Product product) {
-        System.out.println("Saving product: " + product);
-        return true;
+        boolean success;
+        try {
+            success = productDao.insert(product);
+        } catch (SQLException e) {
+            throw new RuntimeException("Error inserting product", e);
+        }
+        return success;
     }
 
     public void updateProduct(final String code, final int quantity) {
