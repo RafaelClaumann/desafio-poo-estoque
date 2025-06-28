@@ -9,7 +9,9 @@ Com o comando `mvn clean install` as dependencias serâo instaladas.
 
 O método `main` está na classe `App.java`.
 
-### Diferença entre os métodos executeQuery e executeUpdate no JDBC
+# Anotações
+
+## Diferença entre os métodos executeQuery e executeUpdate no JDBC
 - `executeQuery` é usado para executar instruções SQL do tipo SELECT, ou seja, consultas que retornam dados. Ele retorna um objeto do tipo ResultSet, que contém os dados resultantes da consulta. É indicado para operações que recuperam informações do banco de dados.
 - `executeUpdate` é utilizado para executar instruções SQL que modificam o banco de dados, como INSERT, UPDATE e DELETE. Esse método retorna um valor inteiro que indica o número de linhas afetadas pela operação. Não retorna dados, apenas o impacto da alteração.
 
